@@ -3,14 +3,14 @@ package com.example.trialapp.models
 enum class BoardSize(val numCards: Int) {
 
     EASY(8),
-    Medium(18),
-    Hard(24);
+    MEDIUM(18),
+    HARD(24);
 
     fun getWidth(): Int{
     return when (this){
         EASY -> 2
-        Medium ->  3
-        Hard -> 4
+        MEDIUM ->  3
+        HARD -> 4
         }
     }
 

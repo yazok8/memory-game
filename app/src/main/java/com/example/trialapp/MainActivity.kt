@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity() {
 
     companion object{
-        private val TAG = "MainActivity"
+        private const val TAG = "MainActivity"
     }
     private lateinit var clRoot: ConstraintLayout
     private lateinit var rvBoard: RecyclerView
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var memoryGame: MemoryGame
     private lateinit var adapter: MemoryBoardAdapter
-    private var boardSize = BoardSize.EASY
+    private var boardSize:BoardSize = BoardSize.EASY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         clRoot = findViewById(R.id.clRoot)
         rvBoard = findViewById(R.id.rvBoard)
         tvNumMoves = findViewById(R.id.tvNumMoves)
-
+        tvNumPairs = findViewById(R.id.tvNumPairs)
 
         setUpBoard()
     }
@@ -55,15 +56,27 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId){
             R.id.mi_refresh ->{
                 if(memoryGame.getNumMoves() > 0 && !memoryGame.haveWonGame()){
-                    showAlertDialog()
+                    showAlertDialog("Quit your current game?", null, View.OnClickListener {
+                        setUpBoard()
+                    })
+                }else{
+                    setUpBoard()
                 }
-                //set up the game again
-                setUpBoard()
-
-
+                return true
+            }
+            R.id.mi_mew_size ->{
+                showNewSizeDialog()
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showNewSizeDialog() {
+        val boardSizeView =LayoutInflater.from(this).inflate(R.layout.dialog_board_size, null)
+        showAlertDialog("Choose new size", null, View.OnClickListener {
+
+        })
     }
 
     private fun showAlertDialog(title: String, view:View?, positiveClickListener: View.OnClickListener) {
@@ -74,10 +87,25 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("OK"){_,_->
                 positiveClickListener.onClick(null)
             }.show()
-
     }
 
     private fun setUpBoard() {
+        when(boardSize){
+            BoardSize.EASY -> {
+                tvNumMoves.text = "EASY: 4 x 2"
+                tvNumPairs.text = "Pairs: 0 / 4"
+            }
+
+            BoardSize.MEDIUM -> {
+                tvNumMoves.text = "MEDIUM: 6 * 3"
+                tvNumPairs.text = "Pairs: 0 / 9"
+            }
+            BoardSize.HARD -> {
+                tvNumMoves.text = "HARD: 6 * 4"
+                tvNumPairs.text = "Pairs: 0 / 12"
+            }
+        }
+
         tvNumPairs = findViewById(R.id.tvNumPairs)
         memoryGame = MemoryGame(boardSize)
 
