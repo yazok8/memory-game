@@ -2,6 +2,8 @@ package com.example.trialapp.utils
 
 import com.example.trialapp.R
 
+
+const val EXTRA_BOARD_SIZE = "EXTRA_BOARD_SIZE"
 var DEFAULT_ICONS = listOf(
     R.drawable.ic_face,
     R.drawable.ic_flower,
