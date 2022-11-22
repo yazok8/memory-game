@@ -1,4 +1,4 @@
-package com.example.trialapp
+package com.ykhapps.trialapp
 
 import android.app.Activity
 import android.content.Intent
@@ -24,11 +24,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.trialapp.models.BoardSize
-import com.example.trialapp.utils.*
+import com.ykhapps.trialapp.models.BoardSize
+import com.ykhapps.trialapp.utils.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.ykhapps.trialapp.R
 import java.io.ByteArrayOutputStream
 
 class CreateActivity : AppCompatActivity() {
@@ -103,7 +104,7 @@ class CreateActivity : AppCompatActivity() {
     }
 
     private fun saveDataToFirebase() {
-        Log.i(TAG, "saveDataForFirebase")
+        Log.i(TAG, "saveDataToFirebase")
         btnSave.isEnabled = false
         val customNameGame = etGameName.text.toString()
         // Check  that we are not over writing someone else's data
@@ -268,9 +269,9 @@ class CreateActivity : AppCompatActivity() {
     private val getResult =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode== PICK_PHOTO_CODE) {
-                val value = it.data?.getStringExtra("input")
+        ) { result ->
+            if (result.resultCode== PICK_PHOTO_CODE && result.data != null) {
+                val value = result.data?.getStringExtra("input")
             }
         }
 

@@ -1,6 +1,6 @@
-package com.example.trialapp.utils
+package com.ykhapps.trialapp.utils
 
-import com.example.trialapp.R
+import com.ykhapps.trialapp.R
 
 
 const val EXTRA_BOARD_SIZE = "EXTRA_BOARD_SIZE"

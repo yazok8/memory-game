@@ -1,10 +1,14 @@
-package com.example.trialapp.models
+package com.ykhapps.trialapp.models
 
 enum class BoardSize(val numCards: Int) {
 
     EASY(8),
     MEDIUM(18),
     HARD(24);
+
+    companion object{
+        fun getByValue(value: Int) = values().first{ it.numCards == value}
+    }
 
     fun getWidth(): Int{
     return when (this){

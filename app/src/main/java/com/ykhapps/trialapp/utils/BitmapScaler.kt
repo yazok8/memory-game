@@ -1,4 +1,4 @@
-package com.example.trialapp.utils
+package com.ykhapps.trialapp.utils
 
 import android.graphics.Bitmap
 

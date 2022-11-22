@@ -1,4 +1,4 @@
-package com.example.trialapp
+package com.ykhapps.trialapp
 
 import org.junit.Test
 

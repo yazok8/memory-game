@@ -1,4 +1,4 @@
-package com.example.trialapp
+package com.ykhapps.trialapp
 
 import android.content.Context
 import android.net.Uri
@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.trialapp.models.BoardSize
+import com.ykhapps.trialapp.models.BoardSize
 import kotlin.math.min
 
 class ImagePickerAdapter(
