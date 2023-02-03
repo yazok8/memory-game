@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -26,6 +27,7 @@ import com.ykhapps.trialapp.utils.EXTRA_BOARD_SIZE
 import com.ykhapps.trialapp.utils.EXTRA_GAME_NAME
 import com.github.jinatonic.confetti.CommonConfetti
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
@@ -41,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvNumMoves: TextView
     private lateinit var tvNumPairs: TextView
 
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var user: FirebaseAuth
     private val db = Firebase.firestore
     private var gameName: String? = null
     private var customGameImages : List<String>? = null
@@ -98,6 +102,24 @@ class MainActivity : AppCompatActivity() {
                 showDownloadDialog()
                 return true
             }
+
+            R.id.mi_download ->{
+                showDownloadDialog()
+                return true
+            }
+            R.id.mi_sign_out ->{
+                if(memoryGame.getNumMoves() > 0 && !memoryGame.haveWonGame()) {
+                    showAlertDialog("Quit your current game?", null, View.OnClickListener {
+                        FirebaseAuth.getInstance().signOut();
+                        finish()
+                        }
+                    )
+                }else{
+                    FirebaseAuth.getInstance().signOut();
+                    finish()
+                }
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -116,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showDownloadDialog() {
-    val boardDownloadView = LayoutInflater.from(this).inflate(R.layout.dialog_download_board,null)
+        val boardDownloadView = LayoutInflater.from(this).inflate(R.layout.dialog_download_board,null)
         showAlertDialog("Fetch memory game", boardDownloadView, View.OnClickListener {
             //Grab the text of the game name that the user wants to download
             val etDownloadGame = boardDownloadView.findViewById<EditText>(R.id.etDownloadGame)
@@ -199,6 +221,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+
     private fun showAlertDialog(title: String, view:View?, positiveClickListener: View.OnClickListener) {
         AlertDialog.Builder(this)
             .setTitle(title)
@@ -209,35 +232,42 @@ class MainActivity : AppCompatActivity() {
             }.show()
     }
 
+
+
     private fun setUpBoard() {
-        supportActionBar?.title = gameName ?: getString(R.string.app_name)
-        memoryGame = MemoryGame(boardSize, customGameImages)
-        when(boardSize){
-            BoardSize.EASY -> {
-                tvNumMoves.text = "EASY: 4 x 2"
-                tvNumPairs.text = "Pairs: 0 / 4"
+            supportActionBar?.title = gameName ?: getString(R.string.app_name)
+            memoryGame = MemoryGame(boardSize, customGameImages)
+            when (boardSize) {
+                BoardSize.EASY -> {
+                    tvNumMoves.text = "EASY: 4 x 2"
+                    tvNumPairs.text = "Pairs: 0 / 4"
+                }
+
+                BoardSize.MEDIUM -> {
+                    tvNumMoves.text = "MEDIUM: 6 * 3"
+                    tvNumPairs.text = "Pairs: 0 / 9"
+                }
+                BoardSize.HARD -> {
+                    tvNumMoves.text = "HARD: 6 * 4"
+                    tvNumPairs.text = "Pairs: 0 / 12"
+                }
             }
 
-            BoardSize.MEDIUM -> {
-                tvNumMoves.text = "MEDIUM: 6 * 3"
-                tvNumPairs.text = "Pairs: 0 / 9"
-            }
-            BoardSize.HARD -> {
-                tvNumMoves.text = "HARD: 6 * 4"
-                tvNumPairs.text = "Pairs: 0 / 12"
-            }
-        }
+            memoryGame = MemoryGame(boardSize, customGameImages)
+            // "this" parameter here is a reference to the Main Activity which is an example of context
+            adapter = MemoryBoardAdapter(
+                this,
+                boardSize,
+                memoryGame.cards,
+                object : MemoryBoardAdapter.CardClickListener {
+                    override fun onCardClicked(position: Int) {
+                        updateGameWithFlip(position)
+                    }
+                })
+            rvBoard.adapter = adapter
+            rvBoard.setHasFixedSize(true)
+            rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
 
-        memoryGame = MemoryGame(boardSize, customGameImages)
-        // "this" parameter here is a reference to the Main Activity which is an example of context
-        adapter =  MemoryBoardAdapter(this, boardSize, memoryGame.cards, object: MemoryBoardAdapter.CardClickListener{
-            override fun onCardClicked(position: Int) {
-                updateGameWithFlip(position)
-            }
-        })
-        rvBoard.adapter= adapter
-        rvBoard.setHasFixedSize(true)
-        rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
     }
 
 
@@ -271,4 +301,5 @@ class MainActivity : AppCompatActivity() {
         tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
         adapter.notifyDataSetChanged()
     }
+
 }
