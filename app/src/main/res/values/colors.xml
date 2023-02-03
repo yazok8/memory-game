@@ -10,7 +10,5 @@
     <color name="color_gray">#E0E0E0</color>
     <color name="color_progress_none">#DC1E0B</color>
     <color name="color_progress_full">#35BA01</color>
-    <color name="orange_dark">#FA4721</color>
-    <color name="orange_darkest">#DE911D</color>
-    <color name="brown_yellow">#FABA21</color>
+    <color name="brown_yellow">#DADE1D</color>
 </resources>

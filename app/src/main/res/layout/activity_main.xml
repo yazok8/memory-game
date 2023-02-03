@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:overScrollMode="never"
-    layout_height=""
-    layout_width=""
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
